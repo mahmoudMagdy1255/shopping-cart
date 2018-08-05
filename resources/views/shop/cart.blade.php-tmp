@@ -1,0 +1,127 @@
+@extends('layouts.master')
+@section('style')
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    @endsection
+
+@section('title')
+    Yaro Shopping Cart
+@endsection
+
+
+@section('content')
+
+    @if(Session::has('cart'))
+    <div class="row">
+        <input type="hidden" id="numberOfProduct" value="{{ count($products) }}">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Total</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach($products as $product)
+                        <tr>
+                            <td class="col-sm-8 col-md-4">
+                            <div class="media">
+                                <a class="thumbnail pull-left" href="#"> <img class="media-object" src="{{ $product['product']->image }}" style="width: 200px; height: 150px;"> </a>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><a>{{ $product['product']->title }}</a></h4>
+
+                                    <span>Status: </span><span class="text-success"><strong>In Stock</strong></span>
+                                </div>
+                            </div></td>
+                            <td class="col-sm-1 col-md-1" style="text-align: center">
+
+
+                            <form method="GET" id="{{  'form-qty' . $product['product']->id}}" action="{{ route('cart.update' , ['id' => $product['product']->id]) }}">
+                                <input type="text" class="form-control" name="qty" value="{{ $product['qty'] }}">
+                            </form>
+
+
+                            </td>
+                            <td class="col-sm-1 col-md-1 text-center">
+                                <strong> {{$product['product']->price}} </strong></td>
+                            <td class="col-sm-1 col-md-1 text-center">
+                                <strong>{{ $product['price'] }}</strong>
+                            </td>
+
+                            <td class="col-sm-1 col-md-1">
+                                <a id="{{ 'update'.$product['product']->id }}" class="btn btn-primary" style="margin-bottom: 15px">
+                                    <span class="glyphicon glyphicon-edit"></span> Update
+                                </a>
+
+                                <a href="{{ route('cart.remove' , ['id' => $product['product']->id]) }}" class="btn btn-danger" style="margin-bottom: 15px">
+                                    <span class="glyphicon glyphicon-remove"></span> Remove
+                                </a>
+
+                            </td>
+                        </tr>
+                    @endforeach
+
+                        <td>   </td>
+                        <td>   </td>
+                        <td>   </td>
+                        <td><h5>Subtotal</h5></td>
+                        <td class="text-right"><h5><strong>${{ $totalPrice}}</strong></h5></td>
+                    </tr>
+                    <tr>
+                        <td>   </td>
+                        <td>   </td>
+                        <td>   </td>
+                        <td><h5>Estimated shipping</h5></td>
+                        <td class="text-right"><h5><strong>${{ $EstimatedShipping }}</strong></h5></td>
+                    </tr>
+                    <tr>
+                        <td>   </td>
+                        <td>   </td>
+                        <td>   </td>
+                        <td><h3>Total</h3></td>
+                        <td class="text-right"><h3><strong>${{ $totalPrice + $EstimatedShipping }}</strong></h3></td>
+                    </tr>
+                    <tr>
+                        <td>   </td>
+                        <td>   </td>
+                        <td>   </td>
+                        <td>
+                        <a href="{{ route('products.index') }}" class="btn btn-default">
+                            <span class="glyphicon glyphicon-shopping-cart"></span> Continue Shopping
+                        </a></td>
+                        <td>
+                        <a href="{{ route('cart.checkout') }}" class="btn btn-success">
+                            Checkout <span class="glyphicon glyphicon-play"></span>
+                        </a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @else
+        <div class="row">
+            <div class="col-sm-6 col-md-6  col-md-offset-3 col-sm-offset-3">
+                <h1>No Items In Cart!</h1>
+            </div>
+        </div>
+    @endif
+
+@endsection
+
+@section('scripts')
+
+<script type="text/javascript">
+
+for (var i = 1 ; i <=  $('#numberOfProduct').val() ; i++) {
+    $('#update' + i).on('click' , function() {
+    $('#form-qty' + 1).get(0).submit();
+});
+};
+
+
+</script>
+@endsection
